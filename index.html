@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unearthed</title>
+
+    <link rel="stylesheet" href="theme/style.css" />
+    <link rel="stylesheet" href="theme/calendar.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/28f873ec8c.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"
+    />
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <link rel="icon" href="theme/favicon.ico" type="image/x-icon" />
+  </head>
+
+  <body>
+    <div class="mobile-warning">Go on desktop pls</div>
+    <div class="site_content">
+      <div class="container">
+        <div class="bar">
+          <div class="title-box">
+            <div class="title">UN-<span class="highlight">EARTHED</span></div>
+            <div class="subtitle">
+              real-time<br />atlas museum<br />website thing
+            </div>
+          </div>
+          <div class="date-card" id="dateCard">
+            <div class="subtitle" style="color: #527dd9">current window</div>
+            <input id="dateRange" />
+            <div id="dateDisplay" style="color: #527dd9"></div>
+          </div>
+        </div>
+        <div id="map"></div>
+        <div class="subcontainer" style="background: #ffa9b6">
+          <div class="title-box">
+            <div class="title" style="color: #fff8eb">
+              WHAT IS <br />UNEARTHED?
+            </div>
+            <div class="paragraph-text" style="color: #fff8eb">
+              I love maps and museums, so I wanted to try combining both into a
+              kind of live museum that aggregates archaeological and
+              paleontological discoveries in almost real space-time. This is a
+              prototype of that idea, relying on a lot of free tier software
+              subscriptions and fake homemade machine learning. As you will
+              find, some of the results are pretty accurate, and others might be
+              completely scuffed. Either way, every week we are finding enough
+              things from thousands of years ago to populate this map! You know
+              what they say about archaeologists — every discovery is
+              groundbreaking! Hahaha.
+            </div>
+          </div>
+        </div>
+        <div class="subcontainer" style="background: #527dd9">
+          <div class="title-box">
+            <div class="paragraph-text" style="color: #fff8eb">
+              These articles are pulled from a basic keyword search query and
+              funneled through some very messy custom filters that try to
+              prevent Mapbox from putting text about Athens, Greece into Athens,
+              Georgia. There are problems that I will not go in detail about,
+              but I've left the geocoding at about 95% accuracy. Eventually, I
+              might make some kind of model that is really good at deducing
+              where exactly some dinosaur was dug up from a noisy headline and
+              excerpt. (Also, if the markers aren't showing up, it's probably
+              because we've maxed out NewsAPI's daily retrieval limit.) For now,
+              the limitations of this app are more or less the limitations of
+              the software, but feel free to experiment with the code!
+            </div>
+            <div class="title" style="color: #fff8eb">CODING</div>
+          </div>
+        </div>
+        <div class="subcontainer" style="background: #44bf6b">
+          <div class="title-box">
+            <div class="title" style="color: #fff8eb">CREDITS</div>
+            <div class="paragraph-text" style="color: #fff8eb">
+              Unearthed is using
+              <a href="https://newsapi.org/" target="_blank">NewsAPI</a>
+              for real-time news data with a time delay of 24 hours,
+              <a href="https://spacy.io/" target="_blank">spaCy</a>
+              for named entity recognition, and
+              <a href="https://www.mapbox.com/" target="_blank">Mapbox</a> for
+              geocoding. The map is built with
+              <a href="https://leafletjs.com/" target="_blank">Leaflet</a> and
+              styled with tiles from
+              <a href="https://www.jawg.io/en/" target="_blank">Jawg</a>, and
+              date picking is enabled by
+              <a href="https://flatpickr.js.org/" target="_blank">flatpickr</a>.
+              We are location matching against datasets of
+              <a href="https://simplemaps.com/data/world-cities" target="_blank"
+                >cities</a
+              >,
+              <a
+                href="https://github.com/dr5hn/countries-states-cities-database"
+                target="_blank"
+                >states</a
+              >, and
+              <a
+                href="https://github.com/dr5hn/countries-states-cities-database"
+                target="_blank"
+                >countries</a
+              >
+              pulled from the lovely Internet. Many thanks to everyone who coded
+              these things for making this so much easier, and also shoutout
+              Amanda Askell <3 All code can be found on
+              <a href="https://github.com/ixials/unearthed" target="_blank"
+                >GitHub</a
+              >.
+            </div>
+          </div>
+        </div>
+        <div class="footer-box">
+          <div class="footer-text">Made by @ixials</div>
+          <div class="footer-text">Digging things up since ©2026</div>
+        </div>
+      </div>
+    </div>
+    <script src="map.js"></script>
+  </body>
+</html>
