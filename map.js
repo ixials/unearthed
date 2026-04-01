@@ -45,11 +45,40 @@ const tiles = L.tileLayer(
 );
 tiles.addTo(map);
 
+async function zoomToCountry(country) {
+  if (!country) return;
+
+  const token = MAPBOX_TOKEN;
+  const encoded = encodeURIComponent(country);
+
+  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encoded}.json?access_token=${token}&limit=1`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.features && data.features.length > 0) {
+      const bbox = data.features[0].bbox;
+
+      if (bbox) {
+        map.fitBounds([
+          [bbox[1], bbox[0]],
+          [bbox[3], bbox[2]],
+        ]);
+      } else {
+        const [lon, lat] = data.features[0].center;
+        map.setView([lat, lon], 5);
+      }
+    }
+  } catch (err) {
+    console.error("zoom error:", err);
+  }
+}
+
 map.attributionControl.addAttribution(
   `<a href="https://newsapi.org/" target="_blank">© NewsAPI</a> <a href="https://www.jawg.io?utm_medium=map&utm_source=attribution" target="_blank">© Jawg</a> <a href="https://www.mapbox.com/about/maps">© Mapbox</a> <a href="http://www.openstreetmap.org/copyright">© OpenStreetMap</a>`,
 );
 
-// https://newsapi.org/
 // ======== DATE ========
 const dateDisplay = document.getElementById("dateDisplay");
 const dateCard = document.getElementById("dateCard");
@@ -117,12 +146,54 @@ legend.onAdd = function (map) {
             <div class="checkmark"></div>
             <div class="checklist-text">Shipwrecks</div>
         </label>
+
+        <br/ >
+
         <div class="legend-title">COUNTRY</div>
+        <select id="country-dropdown">
+        <option value="ALL">All Countries</option>
+        </select>
+
+        <div class="legend-title">DATA</div>
         <div class="legend-text">Coming soon!</div>
     `;
 
   L.DomEvent.disableClickPropagation(div);
   L.DomEvent.disableScrollPropagation(div);
+
+  async function loadCountries() {
+    const response = await fetch("/data/countries.csv");
+    const text = await response.text();
+    const { data } = Papa.parse(text, { header: true });
+    const countries = data
+      .map((row) => row.name)
+      .filter(Boolean)
+      .sort();
+
+    const select = document.getElementById("country-dropdown");
+    countries.forEach((country) => {
+      const option = document.createElement("option");
+      option.value = country;
+      option.textContent = country;
+      select.appendChild(option);
+    });
+
+    new Choices(select, {
+      searchEnabled: true,
+      itemSelectText: "",
+      shouldSort: false,
+      position: "bottom",
+      placeholderValue: "Select a country",
+    });
+
+    select.addEventListener("change", () => {
+      const country = select.value;
+      zoomToCountry(country);
+      loadNews();
+    });
+  }
+
+  loadCountries();
 
   return div;
 };
@@ -204,6 +275,9 @@ function renderMarkers(articles) {
   filteredArticles.forEach((article) => addMarker(article));
 }
 
+// const group = L.featureGroup(markers);
+// map.fitBounds(group.getBounds());
+
 // ======== BACKEND ========
 async function loadNews() {
   try {
@@ -211,8 +285,18 @@ async function loadNews() {
       from: selectedStart.toISOString().split("T")[0],
       to: selectedEnd.toISOString().split("T")[0],
     });
+
+    const country = document.getElementById("country-dropdown")?.value || "";
+    if (country && country !== "ALL") {
+      params.append("country", country);
+    }
+
     const response = await fetch(`${API_URL}?${params}`);
     const data = await response.json();
+
+    if (data.mapboxToken) {
+      MAPBOX_TOKEN = data.mapboxToken;
+    }
 
     articles = data.articles || [];
 

@@ -2,5 +2,8 @@
 .vercel
 .env
 .env*.local
+.venv
+.venv/
 settings.json
 analysis
+git 

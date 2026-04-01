@@ -53,7 +53,7 @@ CATEGORY_KEYWORDS = {
         "artifact", "pottery", "ceramic", "tool", "jewelry",
         "coin", "figurine", "mask", "tablet", "inscription",
         "sword", "scroll", "vial", "textile", "mosaic", "headdress", 
-        "armor", "helmet"
+        "armor", "helmet", "clay", "bead", "painting"
     ],
     "Ruins": [
         "ruins", "temple", "palace", "fortress", "fortification,"
@@ -62,12 +62,13 @@ CATEGORY_KEYWORDS = {
     ],
     "Burial": [
         "burial", "tomb", "grave", "cemetery", "sarcophagus",
-        "coffin", "skeleton", "remains", "mummy", "bone"
+        "coffin", "skeleton", "remains", "mummy", "bone", "mausoleum",
+        "sacrifice", "necropolis", "catacomb", "crypt", "funerary"
     ],
     "Fossil": [
-        "fossil", "dinosaur", "prehistoric", "vertebra",
+        "fossil", "fossilized", "dinosaur", "prehistoric", "vertebra",
         "bone", "paleontologist", "species", "skull", "extinct", 
-        "million"
+        "million", "amber"
     ],
     "Shipwreck": [
         "shipwreck", "wreck", "vessel", "ship", "boat",
@@ -79,7 +80,7 @@ DISCOVERY_KEYWORDS = {
     "found", "discovered", "unearthed", "excavated", "uncovered", 
     "revealed", "recovered", "located", "identified", "excavation",
     "buried", "dug", "tomb", "ruins", "artifact", "skeleton",
-    "burial", "necropolis", "temple", "site", "dig"
+    "burial", "excavation", "temple", "site", "dig", "discovery"
 }
 
 DESC_BLACKLIST = [ "appeared first on ", "the post ", "[...]" ]
@@ -92,10 +93,6 @@ STOP_WORDS = {
 QUERY = (
     "(archaeologist OR paleontologist OR archaeology OR paleontology)" 
     "AND" 
-    "(ancient OR excavation OR fossil OR artifact OR relic OR shipwreck"
-    " OR ruins OR tomb OR burial OR mosaic OR inscription OR pottery"
-    " OR civilization OR castle OR fortress OR textile OR sword OR jewelry)"
-    " AND "
     "(discovery OR discover OR discovered OR unearth OR unearthed OR uncover OR uncovered"
     " OR excavate OR excavated OR reveal OR revealed OR recover OR recovered OR found)"
     )

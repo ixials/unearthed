@@ -29,7 +29,7 @@ def clean_name(name):
 
     return name.lower()
 
-with open(os.path.join(BASE_DIR, "data/cities.csv")) as f:
+with open(os.path.join(BASE_DIR, "../data/cities.csv")) as f:
     reader = csv.DictReader(f)
     CITY_TO_COUNTRY = {}
     for row in reader:
@@ -43,7 +43,7 @@ with open(os.path.join(BASE_DIR, "data/cities.csv")) as f:
 
     CITIES = set(CITY_TO_COUNTRY.keys())
 
-with open(os.path.join(BASE_DIR, "data/states.csv")) as f:
+with open(os.path.join(BASE_DIR, "../data/states.csv")) as f:
     reader = csv.DictReader(f)
     STATE_TO_COUNTRY = {}
     
@@ -58,9 +58,10 @@ with open(os.path.join(BASE_DIR, "data/states.csv")) as f:
 
     STATES = set(STATE_TO_COUNTRY.keys())
 
-with open(os.path.join(BASE_DIR, "data/countries.csv")) as f:
-    reader = csv.DictReader(f)
-    COUNTRIES = {clean_name(row["name"]) for row in reader}
+with open(os.path.join(BASE_DIR, "../data/countries.csv")) as f:
+    rows = list(csv.DictReader(f))
+    COUNTRIES_RAW = [row["name"] for row in rows]
+    COUNTRIES = {clean_name(row["name"]) for row in rows}
 
 def extract_loc(text):
     """Extract location entities from text"""
@@ -289,12 +290,14 @@ def process_news(articles):
     deduped = dedup_news(processed)
     return deduped
 
-def fetch_news(api_key, from_date, to_date):
+def fetch_news(api_key, from_date, to_date, country):
     """Fetch news"""
     url = "https://newsapi.org/v2/everything"
 
+    query = QUERY + f" AND {country}" if country != "" else QUERY
+
     params = {
-        "q": QUERY,
+        "q": query,
         "from": from_date,
         "to": to_date,
         "sortBy": "relevancy",
@@ -340,6 +343,7 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
         
         api_key = os.environ.get("NEWS_API_KEY")
+        mapbox_token = os.environ.get("MAPBOX_TOKEN")
         
         if not api_key:
             response = {
@@ -354,20 +358,24 @@ class handler(BaseHTTPRequestHandler):
 
             from_date = params.get("from", [None])[0]
             to_date = params.get("to", [None])[0]
+            country = params.get("country", [None])[0]
 
             if not from_date:
                 from_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
             if not to_date:
                 to_date = datetime.now().strftime("%Y-%m-%d")
+            if not country:
+                country = ""
 
-            articles = fetch_news(api_key, from_date, to_date)
+            articles = fetch_news(api_key, from_date, to_date, country)
             processed = process_news(articles)
             
             response = {
                 "articles": processed,
                 "count": len(processed),
                 "timestamp": datetime.now().isoformat(),
-                "mode": "live"
+                "mode": "live",
+                "mapboxToken": mapbox_token
             }
         
         self.wfile.write(json.dumps(response).encode())
