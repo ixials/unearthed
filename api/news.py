@@ -1,4 +1,4 @@
-from .config import CHAR_MAP, CATEGORY_KEYWORDS, DISCOVERY_KEYWORDS, DESC_BLACKLIST, STOP_WORDS, QUERY
+from .config import CHAR_MAP, CATEGORY_KEYWORDS, DISCOVERY_KEYWORDS, DESC_BLACKLIST, STOP_WORDS, SIMPLE_QUERY, BASE_QUERY
 from http.server import BaseHTTPRequestHandler
 import json
 import requests
@@ -294,10 +294,11 @@ def fetch_news(api_key, from_date, to_date, country):
     """Fetch news"""
     url = "https://newsapi.org/v2/everything"
 
-    query = QUERY + f" AND {country}" if country != "" else QUERY
+    query = SIMPLE_QUERY + f" AND {country}" if country != "" else BASE_QUERY
 
     params = {
         "q": query,
+        "excludeDomains": "freerepublic.com",
         "from": from_date,
         "to": to_date,
         "sortBy": "relevancy",

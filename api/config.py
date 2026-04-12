@@ -83,16 +83,21 @@ DISCOVERY_KEYWORDS = {
     "burial", "excavation", "temple", "site", "dig", "discovery"
 }
 
-DESC_BLACKLIST = [ "appeared first on ", "the post ", "[...]" ]
+DESC_BLACKLIST = [ "appeared first on ", "the post ", "[...]", "don't miss", "subscribe" ]
 
 STOP_WORDS = {
     "a", "an", "the", "in", "on", "at", "of", "for", "to", "from", "and",
     "with", "near", "after", "before", "new", "ancient", "old"
 }
 
-QUERY = (
+SIMPLE_QUERY = (
+    "(archaeologist OR paleontologist OR archaeology OR paleontology)"
+)
+
+BASE_QUERY = (
     "(archaeologist OR paleontologist OR archaeology OR paleontology)" 
     "AND" 
     "(discovery OR discover OR discovered OR unearth OR unearthed OR uncover OR uncovered"
     " OR excavate OR excavated OR reveal OR revealed OR recover OR recovered OR found)"
     )
+    

@@ -46,7 +46,10 @@ const tiles = L.tileLayer(
 tiles.addTo(map);
 
 async function zoomToCountry(country) {
-  if (!country) return;
+  if (!country || country === "ALL") {
+    map.setView([25, 45], 3);
+    return;
+  }
 
   const token = MAPBOX_TOKEN;
   const encoded = encodeURIComponent(country);
