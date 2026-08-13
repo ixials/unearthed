@@ -87,10 +87,44 @@ a {
   border-radius: 0.5em;
 }
 
+.map-wrapper {
+  position: relative;
+  margin-top: 32px;
+}
+
 #map {
   width: 100%;
-  margin-top: 32px;
-  aspect-ratio: 21/9;
+  min-height: 420px;
+}
+
+.resize-handle {
+  height: 12px;
+  width: 100%;
+  cursor: ns-resize;
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  z-index: 1000;
+}
+
+#loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 500;
+  background: #fff8eb;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 3px solid #45b768;
+  display: none;
+}
+
+.loading-text {
+  font-family: "Jetbrains Mono", monospace;
+  font-weight: 400;
+  font-size: clamp(12px, 2vw, 16px);
+  display: flex;
 }
 
 #legend {

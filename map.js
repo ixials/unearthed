@@ -45,6 +45,11 @@ const tiles = L.tileLayer(
 );
 tiles.addTo(map);
 
+function setLoading(isLoading) {
+  const el = document.getElementById("loading-indicator");
+  if (el) el.style.display = isLoading ? "flex" : "none";
+}
+
 async function zoomToCountry(country) {
   if (!country || country === "ALL") {
     map.setView([25, 45], 3);
@@ -77,6 +82,41 @@ async function zoomToCountry(country) {
     console.error("zoom error:", err);
   }
 }
+
+const mapContainer = document.getElementById("map");
+const mapWrapper = document.querySelector(".map-wrapper");
+const resizeHandle = document.querySelector(".resize-handle");
+
+let isResizing = false;
+let startY;
+let startHeight;
+
+resizeHandle.addEventListener("mousedown", (e) => {
+  isResizing = true;
+  startY = e.clientY;
+  startHeight = mapContainer.offsetHeight;
+
+  document.body.style.userSelect = "none";
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isResizing) return;
+
+  const delta = e.clientY - startY;
+  const newHeight = startHeight + delta;
+
+  if (newHeight > 200 && newHeight < 900) {
+    mapContainer.style.height = `${newHeight}px`;
+  }
+});
+
+document.addEventListener("mouseup", () => {
+  if (!isResizing) return;
+
+  isResizing = false;
+  document.body.style.userSelect = "";
+  map.invalidateSize();
+});
 
 map.attributionControl.addAttribution(
   `<a href="https://newsapi.org/" target="_blank">© NewsAPI</a> <a href="https://www.jawg.io?utm_medium=map&utm_source=attribution" target="_blank">© Jawg</a> <a href="https://www.mapbox.com/about/maps">© Mapbox</a> <a href="http://www.openstreetmap.org/copyright">© OpenStreetMap</a>`,
@@ -283,6 +323,7 @@ function renderMarkers(articles) {
 
 // ======== BACKEND ========
 async function loadNews() {
+  setLoading(true);
   try {
     const params = new URLSearchParams({
       from: selectedStart.toISOString().split("T")[0],
@@ -306,6 +347,8 @@ async function loadNews() {
     renderMarkers(articles);
   } catch (error) {
     console.error("Error loading news:", error);
+  } finally {
+    setLoading(false);
   }
 }
 
